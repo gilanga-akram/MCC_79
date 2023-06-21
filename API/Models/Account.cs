@@ -34,7 +34,7 @@ namespace API.Models
         //Cardinality
         public Employee Employee { get; set;}
 
-        public ICollection<AccountRole> Employees { get; set;}
+        public ICollection<AccountRole> AccountRoles { get; set;}
 
     }
 }
