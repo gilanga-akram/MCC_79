@@ -4,11 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace API.Models
 {
     [Table("tb_tr_bookings")]
-    public class booking
+    public class Booking : BaseEntity
     {
-        [Key]
-        [Column("guid")]
-        public Guid Guid { get; set; }
+        
         [Column("start_date")]
         public DateTime StartDate { get; set; }
         
@@ -21,11 +19,15 @@ namespace API.Models
         [Column("remarks", TypeName= "nvarchar(max)")]
         public string Remarks { get; set; }
 
-        [Column("create_date")]
-        public DateTime CreatDate { get; set; }
+        [Column("room_guid")]
+        public Guid RoomGuid { get; set; }
 
-        [Column("modifed_date")]
-        public DateTime ModifedTime { get; set; }
+        [Column("employee_guid")]
+        public Guid EmployeeGuid { get; set; }
+
+        //Cardinality
+        public Employee Employee { get; set; }
+        public Room Room { get; set; }
 
     }
 }

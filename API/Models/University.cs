@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace API.Models
 {
     [Table("tb_m_universities")]
-    public class University
+    public class University : BaseEntity
 
     {
         [Key]
@@ -18,11 +18,12 @@ namespace API.Models
         public string Code { get; set; }
         
         [Column("create_date")]
-        public string CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
         
         [Column("modifed_date")]
-        public string ModifedDate { get; set; }
+        public DateTime ModifedDate { get; set; }
 
-
+        //Cardinality
+        public ICollection<Education> Educations { get; set; }
     }
 }
