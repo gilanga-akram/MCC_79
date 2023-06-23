@@ -8,7 +8,7 @@ namespace API.Models
     {
       
 
-        [Column("name", TypeName = "nvarcar(100)")]
+        [Column("name", TypeName = "nvarchar(100)")]
         public string Name { get; set; }
 
         [Column("floor")]
@@ -18,6 +18,6 @@ namespace API.Models
         public int Capacity { get; set; }
         
         //Cardinality
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }

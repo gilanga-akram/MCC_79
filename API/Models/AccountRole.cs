@@ -7,19 +7,15 @@ namespace API.Models
     [Table("tb_m_account_roles")]
     public class AccountRole : BaseEntity
     {
-        [Key]
-        [Column("guid")]
-        public Guid Guid { get; set; }
-
-        [Column("created_date")]
+        [Column("account_guid")]
         public Guid AccountGuid { get; set; }
 
         [Column("role_guid")]
         public Guid  RoleGuid { get; set; }
 
         //Cardinality
-        public Account Account { get; set; }
-        public Role Role { get; set; }
+        public Account? Account { get; set; }
+        public Role? Role { get; set; }
 
     }
 }

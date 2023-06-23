@@ -24,6 +24,6 @@ namespace API.Models
         public DateTime ModifedDate { get; set; }
 
         //Cardinality
-        public ICollection<Education> Educations { get; set; }
+        public ICollection<Education>? Educations { get; set; }
     }
 }

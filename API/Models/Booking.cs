@@ -26,8 +26,8 @@ namespace API.Models
         public Guid EmployeeGuid { get; set; }
 
         //Cardinality
-        public Employee Employee { get; set; }
-        public Room Room { get; set; }
+        public Employee? Employee { get; set; }
+        public Room? Room { get; set; }
 
     }
 }
