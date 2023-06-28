@@ -1,6 +1,7 @@
 ﻿using API.Contracts;
 using API.DTOs.Accounts;
 using API.Models;
+using API.Repositories;
 using API.Utilities.Enums;
 
 namespace API.Services
@@ -8,10 +9,19 @@ namespace API.Services
     public class AccountService
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IUniversityRepository _universityRepository;
+        private readonly IEducationRepository _educationRepository;
 
-        public AccountService(IAccountRepository accountRepository)
+        public AccountService(IAccountRepository accountRepository,
+            IEmployeeRepository employeeRepository,
+            IUniversityRepository universityRepository,
+            IEducationRepository educationRepository)
         {
             _accountRepository = accountRepository;
+            _employeeRepository = employeeRepository;
+            _universityRepository = universityRepository;
+            _educationRepository = educationRepository;
         }
 
         public IEnumerable<GetAccountDto>? GetAccount()
@@ -129,5 +139,31 @@ namespace API.Services
 
             return 1;
         }
+
+        public LoginDto Login(LoginDto loginDto)
+        {
+            var employee = _employeeRepository.GetByEmail(loginDto.Email);
+            if (employee == null)
+            {
+                throw new Exception("Account not found");
+            }
+
+            var account = _accountRepository.GetByGuid(employee.Guid);
+            var isPasswordValid = Hashing.ValidatePassword(loginDto.Password, account.Password);
+            if (!isPasswordValid)
+            {
+                throw new Exception("Password is invalid");
+            }
+
+            var toDto = new LoginDto
+            {
+                Email = loginDto.Email,
+                Password = loginDto.Password,
+            };
+
+            return toDto;
+        }
+
+
     }
 }

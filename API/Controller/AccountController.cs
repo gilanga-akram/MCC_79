@@ -118,6 +118,45 @@ namespace API.Controllers
             });
         }
 
+        [HttpPost("login")]
+        public IActionResult Login(LoginDto login)
+        {
+            LoginDto loginSuccess = new LoginDto();
+            try
+            {
+                loginSuccess = _service.Login(login);
+
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.ToLower().Contains("not found"))
+                {
+                    return NotFound(new ResponseHandler<LoginDto>
+                    {
+                        Code = StatusCodes.Status404NotFound,
+                        Status = HttpStatusCode.BadRequest.ToString(),
+                        Message = ex.Message
+                    });
+                }
+                else
+                {
+                    return BadRequest(new ResponseHandler<LoginDto>
+                    {
+                        Code = StatusCodes.Status400BadRequest,
+                        Status = HttpStatusCode.BadRequest.ToString(),
+                        Message = ex.Message
+                    });
+                }
+            }
+
+            return Ok(new ResponseHandler<LoginDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Successfully login",
+                Data = loginSuccess
+            });
+        }
         [HttpDelete]
         public IActionResult Delete(Guid guid)
         {

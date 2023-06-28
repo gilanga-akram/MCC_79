@@ -2,9 +2,19 @@
 using API.Data;
 using API.Models;
 
-namespace API.Repositories;
-
-public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
+namespace API.Repositories
 {
-    public EmployeeRepository(BookingDbContext context) : base(context) { }
+    public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
+    {
+        //private readonly BookingDbContext _context;
+
+        public EmployeeRepository(BookingDbContext context) : base(context) { }
+
+        public Employee? GetByEmail(string email)
+        {
+            /*return _context.Set<Employee>().Where(e => e.Email.Single(email));*/
+            return _context.Employees.SingleOrDefault(e => e.Email == email);
+        }
+
+    }
 }
