@@ -1,7 +1,5 @@
 ﻿using API.Contracts;
 using API.Data;
-using API.Models;
-using System;
 
 namespace API.Repositories;
 
@@ -22,18 +20,18 @@ public class GeneralRepository<TEntity> : IGeneralRepository<TEntity>
 
     public TEntity? GetByGuid(Guid guid)
     {
-        return _context.Set<TEntity>().Find(guid);
+        var entity = _context.Set<TEntity>().Find(guid);
+        _context.ChangeTracker.Clear();
+        return entity;
     }
 
-
-    
-    public TEntity? Create(TEntity TEntity)
+    public TEntity? Create(TEntity entity)
     {
         try
         {
-            _context.Set<TEntity>().Add(TEntity);
+            _context.Set<TEntity>().Add(entity);
             _context.SaveChanges();
-            return TEntity;
+            return entity;
         }
         catch
         {
@@ -41,11 +39,11 @@ public class GeneralRepository<TEntity> : IGeneralRepository<TEntity>
         }
     }
 
-    public bool Update(TEntity TEntity)
+    public bool Update(TEntity entity)
     {
         try
         {
-            _context.Set<TEntity>().Update(TEntity);
+            _context.Set<TEntity>().Update(entity);
             _context.SaveChanges();
             return true;
         }
@@ -55,23 +53,22 @@ public class GeneralRepository<TEntity> : IGeneralRepository<TEntity>
         }
     }
 
-    public bool Delete(Guid guid)
+    public bool Delete(TEntity entity)
     {
         try
         {
-            var TEntity = GetByGuid(guid);
-            if (TEntity is null)
-            {
-                return false;
-            }
-
-            _context.Set<TEntity>().Remove(TEntity);
+            _context.Set<TEntity>().Remove(entity);
             _context.SaveChanges();
             return true;
         }
-        catch 
+        catch
         {
             return false;
         }
+    }
+
+    public bool IsExist(Guid guid)
+    {
+        return GetByGuid(guid) is not null;
     }
 }

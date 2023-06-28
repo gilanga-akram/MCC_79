@@ -1,12 +1,12 @@
 using API.Contracts;
 using API.Data;
-using Microsoft.EntityFrameworkCore;
 using API.Repositories;
+using API.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 // Add DbContext
@@ -16,12 +16,24 @@ builder.Services.AddDbContext<BookingDbContext>(options => options.UseSqlServer(
 // Add Repository to the container
 builder.Services.AddScoped<IUniversityRepository, UniversityRepository>();
 builder.Services.AddScoped<IEducationRepository, EducationRepository>();
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IAccountRoleRepository, AccountRoleRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+// Add Service to the container
+builder.Services.AddScoped<UniversityService>();
+builder.Services.AddScoped<RoomService>();
+builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<EducationService>();
+builder.Services.AddScoped<BookingService>();
+builder.Services.AddScoped<AccountRoleService>();
+builder.Services.AddScoped<AccountService>();
+
+// Auto Mapper Configurations
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
