@@ -1,14 +1,19 @@
 ﻿using API.DTOs.Rooms;
+using API.Models;
 using API.Services;
 using API.Utilities;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using System.Data;
 using System.Net;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/rooms")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public class RoomController : ControllerBase
     {
         private readonly RoomService _service;
@@ -39,6 +44,31 @@ namespace API.Controllers
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Data found",
                 Data = entities
+            });
+        }
+
+        [HttpGet("unused")]
+        public IActionResult GetUnusedRoom()
+        {
+            var unusedRooms = _service.GetUnusedRoom();
+
+            if (unusedRooms.Count() == 0)
+            {
+                return Ok(new ResponseHandler<IEnumerable<UnusedRoomDto>>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = HttpStatusCode.OK.ToString(),
+                    Message = "Semua room sedang dipakai",
+                    Data = unusedRooms
+                });
+            }
+
+            return Ok(new ResponseHandler<IEnumerable<UnusedRoomDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Data found",
+                Data = unusedRooms
             });
         }
 
@@ -103,7 +133,7 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return BadRequest(new ResponseHandler<UpdateRoomDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<UpdateRoomDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -134,7 +164,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return BadRequest(new ResponseHandler<GetRoomDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<GetRoomDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),

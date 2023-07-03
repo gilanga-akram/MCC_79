@@ -1,6 +1,7 @@
-﻿using API.Utilities;
+﻿using API.Utilites.Validations;
 using API.Utilities.Enums;
 using System.ComponentModel.DataAnnotations;
+using EmployeeDuplicatePropertyAttribute = API.Utilites.Validations.EmployeeDuplicatePropertyAttribute;
 
 namespace API.DTOs.Accounts
 {
@@ -12,34 +13,30 @@ namespace API.DTOs.Accounts
         [Required]
         public DateTime BirthDate { get; set; }
         [Required]
-        [Range(0, 1, ErrorMessage = "Required 0 or 1. 0 = Female, 1 = Male")]
+        [Range(0, 1, ErrorMessage = "Gender only 0 or 1. 0 for Female, 1 for Male")]
         public GenderEnum Gender { get; set; }
-        [Required]
-        public DateTime HiringDate { get; set; }
-        [Required]
-        [EmailAddress]
+        [EmployeeDuplicateProperty("string", "Email")]
         public string Email { get; set; }
         [Required]
         [Phone]
+        [EmployeeDuplicateProperty("string", "PhoneNumber")]
         public string PhoneNumber { get; set; }
         [Required]
         public string Major { get; set; }
         [Required]
         public string Degree { get; set; }
         [Required]
-        [Range(0, 4, ErrorMessage = "GPA must betwen 0 - 4")]
-        public Double Gpa { get; set; }
+        [Range(0, 4, ErrorMessage = "GPA must be between 0-4.")]
+        public double Gpa { get; set; }
         [Required]
         public string UniversityCode { get; set; }
         [Required]
         public string UniversityName { get; set; }
-        [Required]
         [PasswordPolicy]
         public string Password { get; set; }
-        [Required]
-        /*[NotMapped]
-        [Compare(nameof(Password), ErrorMessage = "Passsword not match")]*/
+        [Compare("Password")]
         public string ConfirmPassword { get; set; }
-
+        [Required]
+        public DateTime HiringDate { get; set; }
     }
 }

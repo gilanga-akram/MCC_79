@@ -1,7 +1,7 @@
 ﻿using API.DTOs.Accounts;
 using API.Services;
-using API.Utilities;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -9,6 +9,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("Api/accounts")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public class AccountController : ControllerBase
     {
         private readonly AccountService _service;
@@ -65,6 +66,56 @@ namespace API.Controllers
             });
         }
 
+        [Authorize(Roles = $"{nameof(RoleLevel.User)}")]
+        [HttpPut("change-password")]
+        public IActionResult ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var update = _service.ChangePassword(changePasswordDto);
+            if (update is -1)
+            {
+                return NotFound(new ResponseHandler<ChangePasswordDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Email not found"
+                });
+            }
+            if (update is 0)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<ChangePasswordDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Otp does not match"
+                });
+            }
+            if (update is 1)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<ChangePasswordDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Otp has been used"
+                });
+            }
+            if (update is 2)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<ChangePasswordDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Otp already expired"
+                });
+            }
+            return Ok(new ResponseHandler<ChangePasswordDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Successfully updated"
+            });
+        }
+    
+
         [HttpPost]
         public IActionResult Create(NewAccountDto newAccountDto)
         {
@@ -88,6 +139,47 @@ namespace API.Controllers
             });
         }
 
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public IActionResult LoginRequest(LoginDto loginDto)
+        {
+            var login = _service.Login(loginDto);
+            if (login is "-1")
+            {
+                return NotFound(new ResponseHandler<LoginDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Email not found"
+                });
+            }
+            if (login is "0")
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<LoginDto>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Data not created"
+                });
+            }
+            if (login is "-2")
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<LoginDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Otp does not match"
+                });
+            }
+            return Ok(new ResponseHandler<string>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Successfully Login",
+                Data = login
+            });
+        }
+
         [HttpPut]
         public IActionResult Update(UpdateAccountDto updateAccountDto)
         {
@@ -103,7 +195,7 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return BadRequest(new ResponseHandler<UpdateAccountDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<UpdateAccountDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -118,43 +210,60 @@ namespace API.Controllers
             });
         }
 
-        [HttpPost("login")]
-        public IActionResult Login(LoginDto login)
+      
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public IActionResult Register(RegisterDto register)
         {
-            LoginDto loginSuccess = new LoginDto();
-            try
+            var accountRegister = _service.Register(register);
+            if (accountRegister == null)
             {
-                loginSuccess = _service.Login(login);
-
-            }
-            catch (Exception ex)
-            {
-                if (ex.Message.ToLower().Contains("not found"))
+                return BadRequest(new ResponseHandler<GetRegisterDto>
                 {
-                    return NotFound(new ResponseHandler<LoginDto>
-                    {
-                        Code = StatusCodes.Status404NotFound,
-                        Status = HttpStatusCode.BadRequest.ToString(),
-                        Message = ex.Message
-                    });
-                }
-                else
-                {
-                    return BadRequest(new ResponseHandler<LoginDto>
-                    {
-                        Code = StatusCodes.Status400BadRequest,
-                        Status = HttpStatusCode.BadRequest.ToString(),
-                        Message = ex.Message
-                    });
-                }
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Register failed"
+                });
             }
 
-            return Ok(new ResponseHandler<LoginDto>
+            return Ok(new ResponseHandler<GetRegisterDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
-                Message = "Successfully login",
-                Data = loginSuccess
+                Message = "Successfully register",
+                Data = accountRegister
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("forget-password")]
+        public IActionResult ForgetPassword(ForgetPasswordDto forgetPasswordDto)
+        {
+            var forgetPassword = _service.ForgetPassword(forgetPasswordDto);
+            if (forgetPassword is -1)
+            {
+                return NotFound(new ResponseHandler<ForgetPasswordDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Email not found"
+                });
+            }
+            if (forgetPassword is 0)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<ForgetPasswordDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Otp does not match"
+                });
+            }
+            return Ok(new ResponseHandler<ForgetPasswordDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Successfully updated"
             });
         }
         [HttpDelete]
@@ -173,7 +282,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return BadRequest(new ResponseHandler<GetAccountDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<GetAccountDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),

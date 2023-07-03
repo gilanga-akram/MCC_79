@@ -2,6 +2,7 @@
 using API.Services;
 using API.Utilities;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -9,6 +10,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("Api/employees")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public class EmployeeController : ControllerBase
     {
         private readonly EmployeeService _service;
@@ -65,6 +67,52 @@ namespace API.Controllers
             });
         }
 
+        [HttpGet("get-all-master")]
+        public IActionResult GetMaster()
+        {
+            var employees = _service.GetMaster();
+            if (employees is null)
+            {
+                return NotFound(new ResponseHandler<EmployeeEducationDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "No data found"
+                });
+            }
+
+            return Ok(new ResponseHandler<IEnumerable<EmployeeEducationDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Data found",
+                Data = employees
+            });
+        }
+
+        [HttpGet("get-master/{guid}")]
+        public IActionResult GetMasterByGuid(Guid guid)
+        {
+            var employee = _service.GetMasterByGuid(guid);
+            if (employee is null)
+            {
+                return NotFound(new ResponseHandler<EmployeeEducationDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "No data found"
+                });
+            }
+
+            return Ok(new ResponseHandler<EmployeeEducationDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Data found",
+                Data = employee
+            });
+        }
+
         [HttpPost]
         public IActionResult Create(NewEmployeeDto newEmployeeDto)
         {
@@ -103,7 +151,7 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return BadRequest(new ResponseHandler<UpdateEmployeeDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<UpdateEmployeeDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -134,7 +182,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return BadRequest(new ResponseHandler<GetEmployeeDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<GetEmployeeDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),

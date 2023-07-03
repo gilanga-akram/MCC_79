@@ -2,6 +2,7 @@
 using API.Services;
 using API.Utilities;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -9,6 +10,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/universities")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public class UniversityController : ControllerBase
     {
         private readonly UniversityService _service;
@@ -18,6 +20,7 @@ namespace API.Controllers
             _service = service;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -103,7 +106,7 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return BadRequest(new ResponseHandler<UpdateUniversityDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<UpdateUniversityDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -134,7 +137,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return BadRequest(new ResponseHandler<GetUniversityDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<GetUniversityDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),

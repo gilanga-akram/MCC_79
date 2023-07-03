@@ -1,15 +1,21 @@
 ﻿using API.Contracts;
 using API.DTOs.Rooms;
 using API.Models;
+using API.Repositories;
+using API.Utilities.Enums;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
 
 namespace API.Services
 {
     public class RoomService
     {
-        private readonly IRoomRepository _roomRepository;
-        public RoomService(IRoomRepository roomRepository)
+
+        private readonly IRoomRepository _roomRepository, _bookingRepository;
+        public RoomService(IRoomRepository roomRepository,IRoomRepository bookingRepository)
         {
             _roomRepository = roomRepository;
+            _bookingRepository = bookingRepository;
+            
         }
 
         public IEnumerable<GetRoomDto>? GetRoom()
@@ -126,5 +132,53 @@ namespace API.Services
 
             return 1;
         }
+
+        public IEnumerable<UnusedRoomDto> GetUnusedRoom()
+        {
+        var rooms = _roomRepository.GetAll().ToList();
+
+
+        var usedRooms = from room in _roomRepository.GetAll()
+                        join booking in _bookingRepository.GetAll()
+                        on room.Guid equals booking.RoomGuid
+                        where booking.Status == StatusLevel.OnGoing 
+                        select new UnusedRoomDto
+                        {
+                            RoomGuid = room.Guid,
+                            RoomName = room.Name,
+                            Floor = room.Floor,
+                            Capacity = room.Capacity,
+                        };
+        int i = 0;
+        List<Room> tmpRooms = new List<Room>(rooms);
+
+        foreach (var room in rooms)
+        {
+
+            foreach (var usedRoom in usedRooms)
+            {
+                if (room.Guid == usedRoom.RoomGuid)
+                {
+                    tmpRooms.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+
+        var unusedRooms = from room in tmpRooms
+                          select new UnusedRoomDto
+                          {
+                              RoomGuid = room.Guid,
+                              RoomName = room.Name,
+                              Floor = room.Floor,
+                              Capacity = room.Capacity
+                          };
+
+        return unusedRooms;
+
+
+
+        
+         }
     }
 }

@@ -2,6 +2,7 @@
 using API.Services;
 using API.Utilities;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -9,6 +10,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("Api/Educations")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public class EducationController : ControllerBase
     {
         private readonly EducationService _service;
@@ -103,7 +105,7 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return BadRequest(new ResponseHandler<UpdateEducationDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<UpdateEducationDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -134,7 +136,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return BadRequest(new ResponseHandler<GetEducationDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<GetEducationDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),

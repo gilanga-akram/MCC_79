@@ -1,12 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using API.Utilites.Validations;
+using API.Utilities;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs.Accounts
 {
     public class NewAccountDto
     {
-        [Required]
+     
         public Guid Guid { get; set; }
-        [Required]
+        [PasswordPolicy]
         public string Password { get; set; }
 
         public bool IsDeleted { get; set; }
@@ -14,7 +16,6 @@ namespace API.DTOs.Accounts
 
         public bool IsUsed { get; set; }
 
-        [Required]
         public DateTime ExpiredTime { get; set; }
     }
 }

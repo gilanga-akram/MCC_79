@@ -6,7 +6,6 @@ namespace API.DTOs.Employees
     public class NewEmployeeDto
     {
         [Required]
-        public string Nik { get; set; }
         public string FirstName { get; set; }
         public string? LastName { get; set; }
         [Required]
@@ -18,7 +17,7 @@ namespace API.DTOs.Employees
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-        [Phone]
+        [Required]
         public string PhoneNumber { get; set; }
     }
 }

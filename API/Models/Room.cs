@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using API.Utilities.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
@@ -19,5 +20,9 @@ namespace API.Models
         
         //Cardinality
         public ICollection<Booking>? Bookings { get; set; }
+      
+        public object StartDate { get; internal set; }
+        public StatusLevel Status { get; internal set; }
+        public object RoomGuid { get; internal set; }
     }
 }

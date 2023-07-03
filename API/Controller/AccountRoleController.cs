@@ -3,6 +3,7 @@ using API.DTOs.Accounts;
 using API.Services;
 using API.Utilities;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -10,6 +11,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("Api/AccountRole/roles")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public class AccountRoleController : ControllerBase
     {
         private readonly AccountRoleService _service;
@@ -104,7 +106,7 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return BadRequest(new ResponseHandler<UpdateAccountRoleDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<UpdateAccountRoleDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -135,7 +137,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return BadRequest(new ResponseHandler<GetAccountRoleDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<GetAccountRoleDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),

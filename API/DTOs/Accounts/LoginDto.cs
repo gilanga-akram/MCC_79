@@ -1,4 +1,5 @@
-﻿using API.Utilities;
+﻿using API.Utilites.Validations;
+using API.Utilities;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs.Accounts
