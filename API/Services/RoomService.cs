@@ -133,7 +133,7 @@ namespace API.Services
             return 1;
         }
 
-        public IEnumerable<UnusedRoomDto> GetUnusedRoom()
+        /*public IEnumerable<UnusedRoomDto> GetUnusedRoom()
         {
         var rooms = _roomRepository.GetAll().ToList();
 
@@ -179,6 +179,6 @@ namespace API.Services
 
 
         
-         }
+         }*/
     }
 }

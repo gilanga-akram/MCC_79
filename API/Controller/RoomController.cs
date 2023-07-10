@@ -47,7 +47,7 @@ namespace API.Controllers
             });
         }
 
-        [HttpGet("unused")]
+        /*[HttpGet("unused")]
         public IActionResult GetUnusedRoom()
         {
             var unusedRooms = _service.GetUnusedRoom();
@@ -70,7 +70,7 @@ namespace API.Controllers
                 Message = "Data found",
                 Data = unusedRooms
             });
-        }
+        }*/
 
         [HttpGet("{guid}")]
         public IActionResult GetByGuid(Guid guid)

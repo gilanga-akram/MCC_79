@@ -1,4 +1,4 @@
-﻿@{
+﻿﻿@{
     Layout = "_LayoutTesting";
 }
 
@@ -9,23 +9,21 @@
 
 <body>
     <h2 class="title">Quick Pokemon</h2>
-    <div class="container"  id="pokedex">
-  <div class="tab-content">
-                       
-      
-    </div>
-    <script src="~/js/Pokemon.js"></script>
-    <script>
-        function fetchAbilityData(abilityName) {
-            fetch(`https://pokeapi.co/api/v2/ability/${abilityName}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Lakukan sesuatu dengan data yang diterima dari API
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        }
-    </script>
+    <div class="container" id="pokedex"></div>
+        <div class="tab-content">
+        </div>
+        <script src="~/js/Pokemon.js"></script>
+        <script>
+            function fetchAbilityData(abilityName) {
+                fetch(`https://pokeapi.co/api/v2/ability/${abilityName}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Lakukan sesuatu dengan data yang diterima dari API
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
+        </script>
 </body>
