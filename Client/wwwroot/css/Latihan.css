@@ -1,0 +1,90 @@
+
+h1 {
+    background-color: aqua;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.col1 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.row {
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px;
+    width: 600px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.button-border{
+    border-radius: 5px;
+}
+
+.row-border {
+    border-radius: 10px 0px 0px 10px;
+}
+
+.row-border-reverse-top {
+    border-radius: 0px 10px 0px 0px;
+}
+
+.row-border-reverse-bottom {
+    border-radius: 0px 0px 10px 0px;
+}
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-direction: column;
+    width: auto;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-direction: row;
+}
+
+.button-center {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    cursor: pointer;
+}
+.button1 {
+    background-color: red;
+    width: 100px;
+   
+}
+
+.button2 {
+    background-color: yellow;
+    width: 100px;
+}
+
+.button3 {
+
+    background-color: green;
+    width: 100px;
+}
+
+.buttonreset {
+    background-color: aqua;
+    width: 320px;
+}
+
